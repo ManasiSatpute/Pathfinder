@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pune City: Dijkstra's Algorithm Comparison</title>
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <header>
+                <h1>Algorithm Visualizer</h1>
+                <p>Shortest Path Routing in Pune</p>
+                <div class="theme-toggle">
+                    <button id="darkModeToggle" class="icon-button">🌙 Dark Mode</button>
+                </div>
+            </header>
+            
+            <section class="controls glass-panel">
+                <h2>1. Select Points</h2>
+                <p class="instruction">Click on the map to set a source and a destination point.</p>
+                <div class="point-status">
+                    <div class="status-item"><span class="dot source-dot"></span> Source: <span id="sourceStatus">Not selected</span></div>
+                    <div class="status-item"><span class="dot dest-dot"></span> Dest: <span id="destStatus">Not selected</span></div>
+                </div>
+
+                <h2>2. Select Algorithms</h2>
+                <div class="checkbox-group">
+                    <label class="algo-label">
+                        <input type="checkbox" id="enableBinary" checked>
+                        <span class="color-box binary-color"></span> Binary Heap
+                    </label>
+                    <label class="algo-label">
+                        <input type="checkbox" id="enableBinomial" checked>
+                        <span class="color-box binomial-color"></span> Binomial Heap
+                    </label>
+                    <label class="algo-label">
+                        <input type="checkbox" id="enableFibonacci" checked>
+                        <span class="color-box fibonacci-color"></span> Fibonacci Heap
+                    </label>
+                </div>
+
+                <div class="actions">
+                    <button id="runBtn" class="primary-btn" disabled>Run Algorithms</button>
+                    <button id="clearBtn" class="secondary-btn">Clear Route</button>
+                </div>
+            </section>
+
+            <section class="results glass-panel">
+                <h2>Performance Comparison</h2>
+                <div class="table-container">
+                    <table id="resultsTable">
+                        <thead>
+                            <tr>
+                                <th>Algorithm</th>
+                                <th>Time(ms)</th>
+                                <th>Dist(km)</th>
+                                <th>ETA(min)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr id="rowBinary" class="hidden">
+                                <td>Binary</td><td id="timeBinary">-</td><td id="distBinary">-</td><td id="rideBinary">-</td>
+                            </tr>
+                            <tr id="rowBinomial" class="hidden">
+                                <td>Binomial</td><td id="timeBinomial">-</td><td id="distBinomial">-</td><td id="rideBinomial">-</td>
+                            </tr>
+                            <tr id="rowFibonacci" class="hidden">
+                                <td>Fibonacci</td><td id="timeFibonacci">-</td><td id="distFibonacci">-</td><td id="rideFibonacci">-</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="stats-details" id="statsDetails">
+                    <div class="stat-card">
+                        <h4>Binary Heap Operations</h4>
+                        <p>Insert: <span id="opBinInsert">-</span> | ExtMin: <span id="opBinExt">-</span> | DecKey: <span id="opBinDec">-</span></p>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Binomial Heap Operations</h4>
+                        <p>Insert: <span id="opBinoInsert">-</span> | ExtMin: <span id="opBinoExt">-</span> | DecKey: <span id="opBinoDec">-</span></p>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Fibonacci Heap Operations</h4>
+                        <p>Insert: <span id="opFibInsert">-</span> | ExtMin: <span id="opFibExt">-</span> | DecKey: <span id="opFibDec">-</span></p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="educational glass-panel">
+                <h2>About the Heaps</h2>
+                <div class="info-accordion">
+                    <details>
+                        <summary>Binary Heap</summary>
+                        <div class="details-content">
+                            <p>An array-based tree structure. <strong>O(log V)</strong> for both insert and extract-min operations. In practice, this is very fast for sparse graphs due to memory cache locality.</p>
+                        </div>
+                    </details>
+                    <details>
+                        <summary>Binomial Heap</summary>
+                        <div class="details-content">
+                            <p>A collection of binomial trees. Excellent for merging structures. Operations are typically <strong>O(log V)</strong>.</p>
+                        </div>
+                    </details>
+                    <details>
+                        <summary>Fibonacci Heap</summary>
+                        <div class="details-content">
+                            <p>A lazy structure that defers work. <strong>O(1)</strong> amortized time for `insert` and `decrease-key`. <strong>O(log V)</strong> for `extract-min`. Theoretically the best for dense graphs where `decrease-key` operations vastly outnumber `extract-min` operations.</p>
+                        </div>
+                    </details>
+                </div>
+            </section>
+        </aside>
+
+        <!-- Main Map Area -->
+        <main class="map-area">
+            <div id="map"></div>
+            <!-- Loading Overlay -->
+            <div id="loadingOverlay" class="hidden">
+                <div class="spinner"></div>
+                <p>Computing Shortest Paths...</p>
+            </div>
+        </main>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+    
+    <!-- Application Scripts -->
+    <script src="js/heaps/binaryHeap.js"></script>
+    <script src="js/heaps/binomialHeap.js"></script>
+    <script src="js/heaps/fibonacciHeap.js"></script>
+    
+    <script src="js/algorithms/dijkstraBinary.js"></script>
+    <script src="js/algorithms/dijkstraBinomial.js"></script>
+    <script src="js/algorithms/dijkstraFibonacci.js"></script>
+    
+    <script src="js/map/mapHandler.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
