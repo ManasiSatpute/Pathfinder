@@ -1,0 +1,85 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.node {
+  transition: all 0.3s ease;
+}
+
+.node-visited {
+  animation: visitedAnimation 1.5s ease-out;
+}
+
+.node-shortest-path {
+  animation: shortestPath 1.5s ease-out;
+}
+/* Unique color for stops (Waypoints) */
+.node-waypoint {
+  background-color: #f97316; /* Bright Orange */
+  border-radius: 30%; /* Slightly rounded to look like a map marker */
+  border: 2px solid white;
+  box-shadow: 0 0 10px rgba(249, 115, 22, 0.5);
+  animation: waypointAnimation 0.5s ease-out;
+}
+
+@keyframes waypointAnimation {
+  0% { transform: scale(0.3); background-color: #fdba74; }
+  100% { transform: scale(1); background-color: #f97316; }
+}
+
+@keyframes visitedAnimation {
+  0% {
+    transform: scale(0.3);
+    background-color: rgba(0, 0, 66, 0.75);
+    border-radius: 100%;
+  }
+  50% {
+    background-color: rgba(17, 104, 217, 0.75);
+  }
+  75% {
+    transform: scale(1.2);
+    background-color: rgba(0, 217, 159, 0.75);
+  }
+  100% {
+    transform: scale(1);
+    background-color: rgba(0, 190, 218, 0.75);
+  }
+}
+
+@keyframes shortestPath {
+  0% {
+    transform: scale(0.6);
+    background-color: rgb(255, 254, 106);
+  }
+  50% {
+    transform: scale(1.2);
+    background-color: rgb(255, 254, 106);
+  }
+  100% {
+    transform: scale(1);
+    background-color: rgb(255, 254, 106);
+  }
+}
+.node-waypoint {
+  background-color: #ff9800; /* Orange */
+  outline: 1px solid rgb(175, 216, 248);
+  animation-name: waypointAnimation;
+  animation-duration: 0.3s;
+  animation-timing-function: ease-out;
+  animation-fill-mode: forwards;
+}
+
+@keyframes waypointAnimation {
+  0% { transform: scale(0.3); background-color: #ffb74d; border-radius: 100%; }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1.0); background-color: #ff9800; }
+}
